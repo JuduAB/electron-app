@@ -4,6 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import dgram from 'dgram'
 import { Buffer } from 'node:buffer';
+import { findDevice } from './findDevice.mjs'
 
 const client = dgram.createSocket("udp4");
 // const message = Buffer.from("VERSION",'utf8');
@@ -53,10 +54,11 @@ app.whenReady().then(() => {
 
     // IPC test
     ipcMain.on('ping',async(event, message) => {
-        console.log(message)
         message = Buffer.from(message,'utf8');
-        console.log(message)
         client.send(message, 1119,"192.168.124.27")   
+    })
+    ipcMain.on('find',async(event, message) => {
+        findDevice(mainWindow)
     })
     client.on("message", (msg, rinfo) => {
         mainWindow.webContents.send('message',msg.toString())

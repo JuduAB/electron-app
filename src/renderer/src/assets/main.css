@@ -44,10 +44,10 @@ textarea{
     display: grid;
     grid-template-columns:repeat(2,40vw);
     grid-column-gap:10px;
-    align-items: center;
-    justify-content: center;
-    /* flex-direction: column;
-    margin-bottom: 80px; */
+    /* align-content: center; */
+    justify-items: center; 
+    align-items: end;
+
 }
 
 .logo {
@@ -136,8 +136,9 @@ textarea{
 
 .versions {
     position: absolute;
+    grid-column: span 2; 
     bottom: 30px;
-    margin: 0 auto;
+    /* margin: 0 auto; */
     padding: 15px 0;
     font-family: 'Menlo', 'Lucida Console', monospace;
     display: inline-flex;
@@ -162,6 +163,8 @@ textarea{
     }
 }
 .col-1{
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
 }
@@ -169,10 +172,18 @@ textarea{
     width: 100%;
     height: 100%;
     border: 1px solid var(--ev-c-gray-1);
+    padding: 5px 15px;
 }
 @media (max-width: 720px) {
     .text {
         font-size: 20px;
+    }
+    #app{
+        grid-template-columns: 70vw;
+        grid-row-gap:10px;
+    }
+    body{
+        overflow: auto;
     }
 }
 

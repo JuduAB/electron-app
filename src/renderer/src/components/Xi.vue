@@ -2,10 +2,10 @@
 import { reactive, onMounted } from 'vue'
 
 const data = reactive({
-    dGian1:0,
+    dGian1: 0,
     dGian2: 0,
-    aGain1:0,
-    aGain2:0,
+    aGain1: 0,
+    aGain2: 0,
     message: '',
 })
 onMounted(() => {
@@ -22,49 +22,86 @@ const send = async (message) => {
     window.electron.ipcRenderer.send('ping', message)
 }
 const power = ch => {
-    
+
 }
 </script>
 
 <template>
-    <div>编号：
-        <select>
-            <option v-for="(item, index) in 1000" value="index" class="option">{{ index }}</option>
-        </select>
-        <button>确认</button>
-    </div>
-    <div>
-        信号：
-        <span></span>
-        <span></span>
-    </div>
-    <div>
-        输入模拟增益：
-        <apan>
+    <div class="inputs">
+        <p class="vue">输入模拟增益</p>
+        <div>
+            <input type="number" min="0" max="42" v-model="data.aGain1" />
             <input type="range" min="0" max="42" v-model="data.aGain1">
-            <input type="number" min="0" max="42" v-model="data.aGain1"/>
-        </apan>
-        <apan>
+        </div>
+        <div>
+            <input type="number" min="0" max="42" v-model="data.aGain2" />
             <input type="range" min="0" max="42" v-model="data.aGain2">
-            <input type="number" min="0" max="42" v-model="data.aGain2"/>
-        </apan>
+        </div>
     </div>
-    <div>
-        输入数字增益：
-        <apan>
+    <div class="inputs">
+        <p class="vue">输入数字增益</p>
+        <div>
+            <input type="number" min="-100" max="27" v-model="data.dGian1" />
             <input type="range" min="-100" max="27" v-model="data.dGian1">
-            <input type="number" min="-100" max="27" v-model="data.dGian1"/>
-        </apan>
-        <apan>
+        </div>
+        <div>
+            <input type="number" min="-100" max="27" v-model="data.dGian1" />
             <input type="range" min="-100" max="27" v-model="data.dGian2">
-            <input type="number" min="-100" max="27" v-model="data.dGian1"/>
-        </apan>
+        </div>
     </div>
-    <div>
-        48V
+    <div class="inputs">
+        <p class="vue">48V</p>
         <button @click="power(1)">48V</button>
         <button>48V</button>
     </div>
 
 
 </template>
+
+<style scoped>
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    width: 60px;
+    height: 30px;
+    display: block;
+    background: transparent;
+    color: aliceblue;
+    border: 1px solid var(--color-background-mute);
+    border-radius: 6px;
+    outline: none;
+    text-align: center
+}
+
+.inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* 第一行一列 */
+    grid-template-rows: auto;
+    grid-row-gap: 10px;
+    /* 自动调整高度 */
+    margin-bottom: 20px;
+    align-content: center;
+    justify-items: center;
+}
+
+.inputs>div {
+    display: grid;
+    grid-row-gap: 10px;
+    flex-direction: column;
+    align-content: center;
+    justify-items: center;
+}
+p{
+    grid-column: span 2; 
+    text-align: center;
+}
+.inputs>button{
+    width: 50%;
+    height: 30px;
+}
+</style>
