@@ -1,8 +1,10 @@
+import { error } from 'console';
 import dgram from 'dgram';
 import packet from 'dns-packet';
 
 const findDevice = (win) => {
     // 创建 UDP socket
+    let data = [];
     const socket = dgram.createSocket({ type: 'udp4', reuseAddr: true });
 
     // mDNS 组播地址和端口
@@ -14,16 +16,30 @@ const findDevice = (win) => {
         type: 'query',
         questions: [{
             type: 'PTR',
-            name: '_dante._tcp.local.' // 查找 Dante 服务
+            name: '_netaudio-arc._udp.local' // 查找 Dante 服务
         }]
     });
 
     // 监听 UDP 消息
+    let index = 0;
     socket.on('message', (message, rinfo) => {
         const response = packet.decode(message);
-        const data = { response, rinfo}
-        console.log('Received response:', response);
-        win.webContents.send('find',data);
+        try{
+            if (response.type == 'response') {
+                if(response.additionals[0].name.startsWith('DConBT') || response.additionals[0].name.startsWith('DConXi')){
+                    const name = response.additionals[0].name.replace(/.local/g,"")
+                    const ip = rinfo.address
+                    const temp = { name, ip,id:index}
+                    index++
+                    data.push(temp)
+    
+                    // win.webContents.send('find',temp);
+                }
+            }
+        }catch(error){
+            console.log(error)
+        }
+        // console.log('Received response:', response);
     });
 
     // 绑定并加入 mDNS 组播组
@@ -38,6 +54,7 @@ const findDevice = (win) => {
 
     // 定时停止监听，比如10秒后停止
     setTimeout(() => {
+        win.webContents.send('find',data);
         console.log('Stopping listening...');
 
         // 退出 mDNS 组播组
@@ -47,7 +64,9 @@ const findDevice = (win) => {
         socket.close(() => {
             console.log('Socket closed');
         });
-    }, 10000); // 10秒后停止监听
+        console.log(data);
+        
+    }, 1000); // 秒后停止监听
 }
 
 export { findDevice }

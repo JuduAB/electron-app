@@ -172,7 +172,7 @@ textarea{
     width: 100%;
     height: 100%;
     border: 1px solid var(--ev-c-gray-1);
-    padding: 5px 15px;
+    padding: 15px;
 }
 @media (max-width: 720px) {
     .text {
@@ -181,6 +181,7 @@ textarea{
     #app{
         grid-template-columns: 70vw;
         grid-row-gap:10px;
+        padding-top: 15px;
     }
     body{
         overflow: auto;

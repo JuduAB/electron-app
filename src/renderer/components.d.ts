@@ -8,8 +8,16 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     BT: typeof import('./src/components/BT.vue')['default']
+    ElButton: typeof import('element-plus/es')['ElButton']
+    ElIcon: typeof import('element-plus/es')['ElIcon']
     ElOption: typeof import('element-plus/es')['ElOption']
     ElSelect: typeof import('element-plus/es')['ElSelect']
+    IEpDArrowLeft: typeof import('~icons/ep/d-arrow-left')['default']
+    IEpDArrowRight: typeof import('~icons/ep/d-arrow-right')['default']
+    IEpMinus: typeof import('~icons/ep/minus')['default']
+    IEpPlus: typeof import('~icons/ep/plus')['default']
+    IEpVideoPause: typeof import('~icons/ep/video-pause')['default']
+    IEpVideoPlay: typeof import('~icons/ep/video-play')['default']
     Versions: typeof import('./src/components/Versions.vue')['default']
     Xi: typeof import('./src/components/Xi.vue')['default']
   }
