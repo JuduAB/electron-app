@@ -1,14 +1,21 @@
 {
     "name": "dcon-test-tool",
-    "productName": "DConTestTool",
-    "version": "1.0.0Beta",
+    "version": "1.0.1-Beta",
     "description": "An Electron application with Vue",
     "main": "./out/main/index.js",
     "author": "lih",
     "license": "MIT",
     "homepage": "https://electron-vite.org",
     "build": {
-        "appId": "com.example.app"
+        "appId": "com.example.app",
+        "productName": "DConTestTool",
+        "nsis": {
+            "oneClick": false,
+            "allowToChangeInstallationDirectory": true 
+        },
+        "win": {
+            "target": "nsis" 
+        }
     },
     "scripts": {
         "format": "prettier --write .",

@@ -37,7 +37,6 @@ textarea{
     resize: none;
     outline: none;
     background: transparent;
-    margin-top: 12px;
 }
 
 #app {
@@ -98,20 +97,18 @@ textarea{
 
 .actions {
     display: grid;
-    grid-template-columns:repeat(3,auto);
+    grid-template-columns:1fr 1fr 1fr;
+    grid-column-gap: 3%;
+    padding: 12px;
     padding-top: 32px;
-    margin: -6px;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: stretch;
 }
 
-.action {
-    flex-shrink: 0;
-    padding: 6px;
-}
+
 
 .action a {
-    width: 100px;
+    width: 100%;
     cursor: pointer;
     text-decoration: none;
     display: inline-block;
@@ -120,7 +117,6 @@ textarea{
     font-weight: 600;
     white-space: nowrap;
     border-radius: 20px;
-    padding: 0 20px;
     line-height: 38px;
     font-size: 14px;
     border-color: var(--ev-button-alt-border);
@@ -186,18 +182,7 @@ textarea{
     body{
         overflow: auto;
     }
-}
-
-@media (max-width: 620px) {
-    .versions {
-        display: none;
-    }
-}
-
-@media (max-width: 350px) {
-
-    .tip,
-    .actions {
-        display: none;
+    .actions{
+        padding-top: 12px;
     }
 }

@@ -1,20 +1,15 @@
 <script setup>
 import { reactive, ref, watch } from 'vue';
-import Versions from './components/Versions.vue'
+// import Versions from './components/Versions.vue'
 import Xi from './components/Xi.vue';
 import BT from './components/BT.vue';
-// import { da, id } from 'element-plus/es/locales.mjs';
 
 const data = reactive({
     message: '',
     unitType: ['Xi', 'BT'],
     XiShow: false,
     BTShow: false,
-    selectValue: {
-        id: '',
-        name: '',
-        ip: ''
-    },
+    selectValue: undefined,
     options: [
         // {
         //     id: 0,
@@ -59,14 +54,17 @@ watch(() => data.selectValue, (newValue, oldValue) => {
     } else {
         data.BTShow = false
         data.XiShow = false
-        data.selectValue = { id: '', name: '', ip: '' }
+        // data.selectValue = { id: '', name: '', ip: '' }
         window.electron.ipcRenderer.send('polling', { status: false, targetIP: oldValue.ip })
     }
 })
 
 const findDevice = () => {
     window.electron.ipcRenderer.send('find', 'a')
-    data.options = []
+    if(data.options.length !== 0) {
+        data.options.length = 0;
+        data.selectValue = undefined;
+    }
 }
 
 window.electron.ipcRenderer.on('message', (_event, value) => {
@@ -125,7 +123,7 @@ const reset = () => {
 <template>
     <div class="col-1">
         <div class="find">
-            <el-select v-model="data.selectValue" placeholder="Select" style="width: 100%" value-key="id" clearable>
+            <el-select v-model="data.selectValue" placeholder="Select a device" style="width: 100%" value-key="id" clearable>
                 <el-option v-for="item in data.options" :key="item.id" :label="item.name" :value="item">
                     <span style="float: left">{{ item.name }}</span>
                     <span style="float: right;color: var(--el-text-color-secondary);font-size: 13px;">{{ item.ip
@@ -153,7 +151,7 @@ const reset = () => {
         <Xi v-if="data.XiShow" :selectDevice="data.selectValue" :data="data.decodedData" />
         <BT v-if="data.BTShow" :selectDevice="data.selectValue" :data="data.decodedData" />
     </div>
-    <Versions />
+    <!-- <Versions /> -->
 
 </template>
 

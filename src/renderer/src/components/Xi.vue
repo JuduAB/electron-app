@@ -67,28 +67,17 @@ watch(()=>data.IG2,(n,o)=>{
 const send = async (message) => {
     window.electron.ipcRenderer.send('ping', message)
 }
+
 const setPP1 = () =>{
-    if(data.pp1){
-        send({content:`SET PP1 0`,targetIP:props.selectDevice.ip})
-        data.pp1 = 0
-        data.pp1Type = ''
-    }else{
-        send({content:`SET PP1 1`,targetIP:props.selectDevice.ip})
-        data.pp1 = 1
-        data.pp1Type = 'success'
-    }
+    if(props.data.PP1) send({content:`SET PP1 0`,targetIP:props.selectDevice.ip})
+    else send({content:`SET PP1 1`,targetIP:props.selectDevice.ip})
 }
 const setPP2 = () => {
-    if(data.pp2){
+    if(props.data.PP2){
         send({content:`SET PP2 0`,targetIP:props.selectDevice.ip})
-        data.pp2 = 0
-        data.pp2Type = ''
-    }else{
-        send({content:`SET PP2 1`,targetIP:props.selectDevice.ip})
-        data.pp2 = 1
-        data.pp2Type = 'success'
-    }
+    }else send({content:`SET PP2 1`,targetIP:props.selectDevice.ip})
 }
+
 </script>
 
 <template>
@@ -146,10 +135,8 @@ input[type="number"] {
 .inputs {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    /* 第一行一列 */
     grid-template-rows: auto;
     grid-row-gap: 10px;
-    /* 自动调整高度 */
     margin-bottom: 20px;
     align-content: center;
     justify-items: center;

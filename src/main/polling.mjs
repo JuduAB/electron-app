@@ -17,7 +17,7 @@ const polling = {
         
         polling.intervalId = setInterval(() => {
             client.send(message, 1119, targetIP)
-        }, 2000)
+        }, 1000)
     },
 
     stop : () =>{
