@@ -98,7 +98,7 @@ window.electron.ipcRenderer.on('polling', (_event, value) => {
 })
 
 const reset = () => {
-    switch (data.selectValue.name.slice(0, 6)) {
+    switch (data.selectValue.model) {
         case 'DConXi':
             window.electron.ipcRenderer.send('reset', {
                 content: '5345542049473120300D5345542049473220300D5345542050503120300D5345542050503220300D534554204944473120300D534554204944473220300D53455420444E2030',
