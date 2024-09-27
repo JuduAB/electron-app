@@ -22,7 +22,7 @@ const data = reactive({
         //     ip: '192.168.10.46'
         // }
     ],
-    decodedData: null
+    decodedData: {}
 })
 const send = async (message) => {
     window.electron.ipcRenderer.send('ping', message)
@@ -43,18 +43,15 @@ watch(() => data.selectValue, (newValue, oldValue) => {
                 break;
         }
 
-        if (typeof oldValue !== 'undefined') {
-            if (oldValue.name === '') {
-                window.electron.ipcRenderer.send('polling', { status: true, targetIP: newValue.ip })
-            } else {
-                window.electron.ipcRenderer.send('polling', { status: false, targetIP: oldValue.ip })
-                window.electron.ipcRenderer.send('polling', { status: true, targetIP: newValue.ip })
-            }
+        if (typeof oldValue === 'undefined') {
+            window.electron.ipcRenderer.send('polling', { status: true, targetIP: newValue.ip })
+        }else{
+            window.electron.ipcRenderer.send('polling', { status: false, targetIP: oldValue.ip })
+            window.electron.ipcRenderer.send('polling', { status: true, targetIP: newValue.ip })
         }
     } else {
         data.BTShow = false
         data.XiShow = false
-        // data.selectValue = { id: '', name: '', ip: '' }
         window.electron.ipcRenderer.send('polling', { status: false, targetIP: oldValue.ip })
     }
 })

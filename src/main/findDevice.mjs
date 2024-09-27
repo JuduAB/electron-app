@@ -27,7 +27,7 @@ const findDevice = (win) => {
         try{
             if (response.type == 'response') {
                 if(response.additionals[0].name.startsWith('DConBT') || response.additionals[0].name.startsWith('DConXi')){
-                    const name = response.additionals[0].name.replace(/.local/g,"")
+                    const name = response.answers[0].data.replace(/._netaudio-arc._udp.local/g,"")
                     const ip = rinfo.address
                     const temp = { name, ip,id:index}
                     index++
