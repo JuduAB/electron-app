@@ -6,7 +6,7 @@ const crerteTray = (tray,mainWindow) =>{
 
     const contextMenu = Menu.buildFromTemplate([
         { label: '显示主窗口', click: () => { mainWindow.show(); },type:'normal' },
-        { label: '退出', click: () => { mainWindow.destroy();app.quit(); },type:'normal' }
+        { label: '退出', click: () => { app.exit(); },type:'normal' }
     ]);
 
     // 设置托盘菜单

@@ -7,11 +7,12 @@ import IPCMainHandler from './ipcMainHandler.mjs'
 
 const gotTheLock = app.requestSingleInstanceLock()
 if (!gotTheLock) {
-  app.quit()
+  app.exit()
 }else{
     app.on('second-instance',(event,argv,workerDirector) => {
         if(mainWindow) {
             if(mainWindow.isMinimized()) mainWindow.restore();
+            mainWindow.show();
             mainWindow.focus();
         }
     })
