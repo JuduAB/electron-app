@@ -6,8 +6,8 @@ import dgram from 'dgram'
 import { Buffer } from 'node:buffer';
 import { findDevice } from './findDevice.mjs'
 import { polling } from './polling.mjs'
+import {crerteTray} from './createTray.mjs'
 
-const client = dgram.createSocket("udp4");
 const gotTheLock = app.requestSingleInstanceLock()
 if (!gotTheLock) {
   app.quit()
@@ -21,6 +21,7 @@ if (!gotTheLock) {
 }
 // const message = Buffer.from("VERSION",'utf8');
 let mainWindow
+let tray
 function createWindow() {
     // 创建窗口.
         Menu.setApplicationMenu(null)
@@ -98,7 +99,7 @@ app.whenReady().then(() => {
     })
 
     createWindow()
-
+    crerteTray(tray,mainWindow)
     app.on('activate', function () {
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })

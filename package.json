@@ -1,6 +1,6 @@
 {
     "name": "dcon-test-tool",
-    "version": "1.0.1-Beta.2",
+    "version": "1.0.1-Beta.3",
     "description": "An Electron application with Vue",
     "main": "./out/main/index.js",
     "author": "lih",
