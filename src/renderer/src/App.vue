@@ -30,7 +30,7 @@ const send = async (message) => {
 
 watch(() => data.selectValue, (newValue, oldValue) => {
     if (typeof newValue !== 'undefined') {
-        switch (newValue.name.slice(0, 6)) {
+        switch (newValue.model) {
             case 'DConXi':
                 data.BTShow = false
                 data.XiShow = true
