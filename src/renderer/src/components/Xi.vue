@@ -81,7 +81,7 @@ const setPP2 = () => {
 </script>
 
 <template>
-    <div class="creator">{{ props.selectDevice.name + '-' + props.selectDevice.ip }}</div>
+    <div class="creator">{{ props.selectDevice.model + '-' + props.selectDevice.ip }}</div>
     <div class="inputs">
         <p class="vue">输入模拟增益</p>
         <div>

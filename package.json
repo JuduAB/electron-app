@@ -1,6 +1,6 @@
 {
     "name": "dcon-test-tool",
-    "version": "1.0.1-Beta.3",
+    "version": "1.0.1-Beta.4",
     "description": "An Electron application with Vue",
     "main": "./out/main/index.js",
     "author": "lih",
@@ -11,7 +11,8 @@
         "productName": "DConTestTool",
         "nsis": {
             "oneClick": false,
-            "allowToChangeInstallationDirectory": true 
+            "allowToChangeInstallationDirectory": true,
+            "shortcutName": "DCon测试工具" 
         },
         "win": {
             "target": "nsis" 

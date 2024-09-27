@@ -2,11 +2,8 @@ import { app, shell, BrowserWindow, ipcMain,Menu } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import dgram from 'dgram'
-import { Buffer } from 'node:buffer';
-import { findDevice } from './findDevice.mjs'
-import { polling } from './polling.mjs'
 import {crerteTray} from './createTray.mjs'
+import IPCMainHandler from './ipcMainHandler.mjs'
 
 const gotTheLock = app.requestSingleInstanceLock()
 if (!gotTheLock) {
@@ -19,9 +16,11 @@ if (!gotTheLock) {
         }
     })
 }
-// const message = Buffer.from("VERSION",'utf8');
+
 let mainWindow
 let tray
+let ipcMainHandlerInstance
+
 function createWindow() {
     // 创建窗口.
         Menu.setApplicationMenu(null)
@@ -48,8 +47,6 @@ function createWindow() {
         return { action: 'deny' }
     })
 
-    // HMR for renderer base on electron-vite cli.
-    // Load the remote URL for development or the local html file for production.
     if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
         mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
     } else {
@@ -68,38 +65,15 @@ app.whenReady().then(() => {
         optimizer.watchWindowShortcuts(window)
     })
 
-    // IPC test
-    ipcMain.on('ping',async(event, message) => {
-        const temp = Buffer.from(message.content,'utf8');
-        client.send(temp, 1119,message.targetIP)
-    })
-
-    ipcMain.on('find',async(event, message) => {
-        findDevice(mainWindow)
-    })
-
-    ipcMain.on('reset',async (event,message) =>{
-        const temp = Buffer.from(message.content,'hex');
-        client.send(temp, 1119,message.targetIP)
-    })
-
-    ipcMain.on('polling',(event, message) => {
-
-        if(message.status){
-            console.log("start")
-            polling.start(mainWindow,message.targetIP)
-        }else {
-            console.log("stop")
-            polling.stop()
-        }
-    })
-    client.on("message", (msg, rinfo) => {
-        mainWindow.webContents.send('message',msg.toString())
-        console.log(msg.toString())
-    })
-
     createWindow()
     crerteTray(tray,mainWindow)
+    ipcMainHandlerInstance = new IPCMainHandler(mainWindow)
+
+    mainWindow.on('close',event => {
+        event.preventDefault()
+        mainWindow.hide()
+    })
+    
     app.on('activate', function () {
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })

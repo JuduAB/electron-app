@@ -41,7 +41,7 @@ watch(()=>data.pm,(n,o) => {
 </script>
 
 <template>
-    <div class="creator">{{ props.selectDevice.name + '-' + props.selectDevice.ip }}</div>
+    <div class="creator">{{ props.selectDevice.model + '-' + props.selectDevice.ip }}</div>
     <div class="container">
         <div class="buts">
             <el-button @click="send('SET VUP')"><el-icon><IEpPlus /></el-icon></el-button>

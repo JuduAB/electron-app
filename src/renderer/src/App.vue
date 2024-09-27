@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref, watch } from 'vue';
+import { reactive, watch } from 'vue';
 // import Versions from './components/Versions.vue'
 import Xi from './components/Xi.vue';
 import BT from './components/BT.vue';
@@ -10,18 +10,7 @@ const data = reactive({
     XiShow: false,
     BTShow: false,
     selectValue: undefined,
-    options: [
-        // {
-        //     id: 0,
-        //     name: 'DConBT-8b4807.local',
-        //     ip: '192.168.10.170'
-        // },
-        // {
-        //     id: 1,
-        //     name: 'DConXi-8b568c.local',
-        //     ip: '192.168.10.46'
-        // }
-    ],
+    options: [],
     decodedData: {}
 })
 const send = async (message) => {
@@ -76,7 +65,7 @@ window.electron.ipcRenderer.on('polling', (_event, value) => {
     let arr = value.split('ST ')
     arr.shift();
     let c = []
-    if(data.selectValue.name.slice(0, 6) === "DConXi" ){
+    if(data.selectValue.model === "DConXi" ){
         arr.forEach(element => {
             const a = element.split(" ")
             let key = a[1]
@@ -84,7 +73,7 @@ window.electron.ipcRenderer.on('polling', (_event, value) => {
             let obj = {[key]: value}
             c.push(obj)
         })
-    }else if(data.selectValue.name.slice(0, 6) === "DConBT"){
+    }else if(data.selectValue.model === "DConBT"){
         arr.forEach(element => {
             const a = element.split(" ")
             let key = a[1]
@@ -158,11 +147,6 @@ select {
     background: rgba(255, 255, 255, 0);
     size: 5;
     outline: none;
-}
-
-option {
-    /* background-color: black; */
-    padding: 10px;
 }
 
 .find {
