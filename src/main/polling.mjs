@@ -1,33 +1,34 @@
 import dgram from 'dgram'
 import { Buffer } from 'node:buffer';
 
-const message = Buffer.from("GET ALL", 'ascii');
-const client = dgram.createSocket("udp4");
+class Polling {
+    constructor(client) {
+        this.#client = client
+    }
 
-const polling = {
+    #client;
+    #intervalId;
+    #message = Buffer.from("GET ALL", 'ascii');
 
-
-    intervalId:'',
-
-    start: (win,targetIP) => {
-        client.on("message", function (msg, rinfo) {
+    start(win,targetIP) {
+        this.#client.on("message",msg => {
             win.webContents.send('polling', msg.toString())
         });
-        client.send(message, 1119, targetIP)
+        this.#client.send(this.#message, 1119, targetIP)
         
-        polling.intervalId = setInterval(() => {
-            client.send(message, 1119, targetIP)
+        this.#intervalId = setInterval(() => {
+            this.#client.send(this.#message, 1119, targetIP)
         }, 1000)
-    },
+    }
 
-    stop : () =>{
-        clearInterval(polling.intervalId)
-        client.removeAllListeners("message")
-        // client.close()
+    stop() {
+        clearInterval(this.#intervalId)
+        this.#client.removeAllListeners("message")
+    }
+
+    end(){
+        this.#client.close()
     }
 }
 
-
-
-
-export {polling}
+export default Polling;

@@ -1,7 +1,7 @@
 {
     "name": "dcon-test-tool",
-    "version": "1.0.1-Beta.4",
-    "description": "An Electron application with Vue",
+    "version": "1.0.1-Beta.5",
+    "description": "Dcon墙面板控制工具",
     "main": "./out/main/index.js",
     "author": "lih",
     "license": "MIT",
@@ -12,10 +12,17 @@
         "nsis": {
             "oneClick": false,
             "allowToChangeInstallationDirectory": true,
-            "shortcutName": "DCon测试工具" 
+            "shortcutName": "DCon测试工具"
         },
         "win": {
-            "target": "nsis" 
+            "target": [
+                {
+                    "target": "nsis",
+                    "arch": [
+                        "ia32"
+                    ]
+                }
+            ]
         }
     },
     "scripts": {
@@ -40,6 +47,7 @@
         "@electron-toolkit/eslint-config": "^1.0.2",
         "@iconify-json/ep": "^1.2.0",
         "@rushstack/eslint-patch": "^1.10.3",
+        "@types/dns-packet": "^5.6.5",
         "@vitejs/plugin-vue": "^5.0.5",
         "@vue/eslint-config-prettier": "^9.0.0",
         "electron": "^31.0.2",

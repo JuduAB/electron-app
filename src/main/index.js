@@ -1,17 +1,18 @@
-import { app, shell, BrowserWindow, ipcMain,Menu } from 'electron'
+import { app, shell, BrowserWindow, Menu } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import {crerteTray} from './createTray.mjs'
+// import { crerteTray } from './createTray.mjs'
 import IPCMainHandler from './ipcMainHandler.mjs'
+// import { createMenu } from './createMenu.mjs'
 
 const gotTheLock = app.requestSingleInstanceLock()
 if (!gotTheLock) {
-  app.exit()
-}else{
-    app.on('second-instance',(event,argv,workerDirector) => {
-        if(mainWindow) {
-            if(mainWindow.isMinimized()) mainWindow.restore();
+    app.exit()
+} else {
+    app.on('second-instance', (event, argv, workerDirector) => {
+        if (mainWindow) {
+            if (mainWindow.isMinimized()) mainWindow.restore();
             mainWindow.show();
             mainWindow.focus();
         }
@@ -24,12 +25,12 @@ let ipcMainHandlerInstance
 
 function createWindow() {
     // 创建窗口.
-        Menu.setApplicationMenu(null)
-        mainWindow = new BrowserWindow({
+    Menu.setApplicationMenu(null)
+    mainWindow = new BrowserWindow({
         width: 900,
         height: 670,
         show: false,
-        // autoHideMenuBar: true,  //决定窗口菜单栏是否自动隐藏。 一旦设置，菜单栏将只在用户单击 Alt 键时显示。
+        autoHideMenuBar: true,  //决定窗口菜单栏是否自动隐藏。 一旦设置，菜单栏将只在用户单击 Alt 键时显示。
         ...(process.platform === 'linux' ? { icon } : {}),
         webPreferences: {
             preload: join(__dirname, '../preload/index.js'),
@@ -37,6 +38,9 @@ function createWindow() {
         }
     })
 
+    // createMenu(mainWindow)
+
+    mainWindow.setMinimumSize(900, 670)
     mainWindow.setTitle("DConTestTool")
 
     mainWindow.on('ready-to-show', () => {
@@ -67,14 +71,13 @@ app.whenReady().then(() => {
     })
 
     createWindow()
-    crerteTray(tray,mainWindow)
     ipcMainHandlerInstance = new IPCMainHandler(mainWindow)
+    // crerteTray(tray, mainWindow,ipcMainHandlerInstance)
 
-    mainWindow.on('close',event => {
-        event.preventDefault()
-        mainWindow.hide()
+    app.on('quit', event => {
+        ipcMainHandlerInstance.end()
     })
-    
+
     app.on('activate', function () {
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })

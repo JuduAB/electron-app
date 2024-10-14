@@ -2,18 +2,22 @@ import { ipcMain } from 'electron';
 import dgram from 'dgram'
 import { Buffer } from 'node:buffer';
 import { findDevice } from './findDevice.mjs'
-import { polling } from './polling.mjs'
+import Polling from './polling.mjs'
 
 class IPCMainHandler {
+
     constructor(win) {
-        this.registerHandlers(win);
+        this.registerHandlers(win,this.#client,this.#polling);
     }
 
-    registerHandlers(win) {
-        const client = dgram.createSocket("udp4");
+    #client = dgram.createSocket("udp4");
+    #polling = new Polling(dgram.createSocket("udp4"))
 
+    registerHandlers(win,client,polling) {
         ipcMain.on('ping',async(event, message) => {
-            client.send(message.content, 1119,message.targetIP)
+            if(typeof message === 'object'){
+                client.send(message.content, 1119,message.targetIP)
+            }
         })
 
         ipcMain.on('find',async(event, message) => {
@@ -36,11 +40,13 @@ class IPCMainHandler {
         client.on("message", (msg, rinfo) => {
             win.webContents.send('message',msg.toString())
             console.log(msg.toString())
+            console.log(rinfo)
         })
     }
 
-    sendToRenderer(webContents, channel, message) {
-        webContents.send(channel, message);
+    end(){
+        this.#client.close()
+        this.#polling.end()
     }
 }
 

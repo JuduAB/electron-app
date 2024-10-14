@@ -1,12 +1,19 @@
 import {app,Tray,Menu } from 'electron'
 import appIcon from '../../resources/icon.ico?asset'
 
-const crerteTray = (tray,mainWindow) =>{
+const crerteTray = (tray,mainWindow,ipcMainHandlerInstance) =>{
     tray = new Tray(appIcon);
 
     const contextMenu = Menu.buildFromTemplate([
         { label: '显示主窗口', click: () => { mainWindow.show(); },type:'normal' },
-        { label: '退出', click: () => { app.exit(); },type:'normal' }
+        { 
+            label: '退出',
+            click: () => {
+                ipcMainHandlerInstance.end()
+                app.exit();
+            },
+            type:'normal' 
+        }
     ]);
 
     // 设置托盘菜单
