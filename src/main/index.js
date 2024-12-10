@@ -41,7 +41,7 @@ function createWindow() {
     // createMenu(mainWindow)
 
     mainWindow.setMinimumSize(900, 670)
-    mainWindow.setTitle("DConTestTool")
+    mainWindow.setTitle("DConTrol")
 
     mainWindow.on('ready-to-show', () => {
         mainWindow.show()

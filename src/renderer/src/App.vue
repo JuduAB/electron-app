@@ -107,6 +107,9 @@ const reset = () => {
 </script>
 
 <template>
+    <div class="versions">
+        <li>V1.0.0-Beta.5</li>
+    </div>
     <div class="col-1">
         <div class="find">
             <el-select v-model="data.selectValue" placeholder="Select a device" style="width: 100%" value-key="id" clearable>

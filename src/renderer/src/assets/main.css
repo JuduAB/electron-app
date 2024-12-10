@@ -131,18 +131,10 @@ textarea{
 }
 
 .versions {
-    position: absolute;
-    grid-column: span 2; 
-    bottom: 30px;
-    /* margin: 0 auto; */
-    padding: 15px 0;
+    position: fixed;
+    top: 30px;
+    right: 20px;
     font-family: 'Menlo', 'Lucida Console', monospace;
-    display: inline-flex;
-    overflow: hidden;
-    align-items: center;
-    border-radius: 22px;
-    background-color: #202127;
-    backdrop-filter: blur(24px);
 }
 
 .versions li {
