@@ -14,13 +14,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set npm registry to official
-        run: |
-          npm config set registry https://registry.npmjs.org/
-          npm cache clean --force  # 清理缓存，避免使用过期证书
+      - name: Install cnpm
+        run: npm install -g cnpm --registry=https://registry.npmmirror.com/
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install dependencies with cnpm
+        run: cnpm install
 
       - name: Build Electron app
         run: npm run build
