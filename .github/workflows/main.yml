@@ -1,0 +1,42 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - "v*" # 仅在推送 tag 时触发
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Electron app
+        run: npm run build
+
+      - name: Package Electron app
+        run: |
+          if [ "$RUNNER_OS" == "Windows" ]; then npm run build:win; fi
+          if [ "$RUNNER_OS" == "macOS" ]; then npm run build:mac; fi
+          if [ "$RUNNER_OS" == "Linux" ]; then npm run build:linux; fi
+        shell: bash
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/**/*.* # 上传打包文件
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
