@@ -20,6 +20,12 @@ jobs:
       - name: Install dependencies with cnpm
         run: cnpm install
 
+      - name: Install Wine (required for building Windows version)
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt update
+          sudo apt install -y wine64 wine32
+
       - name: Build Electron app
         run: npm run build
 
