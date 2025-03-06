@@ -11,7 +11,10 @@ jobs:
     timeout-minutes: 30
     permissions:
       contents: write
-
+      
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -47,5 +50,3 @@ jobs:
             dist/*.tar.gz
             dist/*.yml
             dist/*.blockmap
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
