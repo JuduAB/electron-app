@@ -3,7 +3,7 @@ import { defineAsyncComponent, reactive, watch } from 'vue';
 // import Versions from './components/Versions.vue'
 import Xi from './components/Xi.vue';
 import BT from './components/BT.vue';
-import Iface from './components/iface.vue';
+import Iface from './components/Iface.vue';
 
 const data = reactive({
     message: '',
