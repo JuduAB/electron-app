@@ -28,16 +28,23 @@ jobs:
           sudo apt update
           sudo apt install -y wine64 wine32
 
-      - name: Build Electron app
-        run: npm run build
-
       - name: Package Electron app
         run: npm run build:win
 
       - name: Publish release
         uses: softprops/action-gh-release@v1
         with:
-          files: dist/**/*.*
-          token: ${{ secrets.GITHUB_TOKEN }}
-        # env:
-        #   GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          draft: true
+          files: |
+            dist/*.exe
+            dist/*.zip
+            dist/*.dmg
+            dist/*.AppImage
+            dist/*.snap
+            dist/*.deb
+            dist/*.rpm
+            dist/*.tar.gz
+            dist/*.yml
+            dist/*.blockmap
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
