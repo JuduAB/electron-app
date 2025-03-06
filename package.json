@@ -11,7 +11,7 @@
     "license": "MIT",
     "homepage": "https://github.com/JuduAB/electron-app",
     "build": {
-        "appId": "com.example.app",
+        "appId": "judu.DConTrol",
         "productName": "DConTrol",
         "nsis": {
             "oneClick": false,
@@ -23,7 +23,8 @@
                 {
                     "target": "nsis",
                     "arch": [
-                        "ia32"
+                        "ia32",
+                        "x64"
                     ]
                 }
             ]
