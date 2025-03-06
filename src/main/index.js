@@ -2,9 +2,7 @@ import { app, shell, BrowserWindow, Menu } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-// import { crerteTray } from './createTray.mjs'
 import IPCMainHandler from './ipcMainHandler.mjs'
-// import { createMenu } from './createMenu.mjs'
 
 const gotTheLock = app.requestSingleInstanceLock()
 if (!gotTheLock) {
@@ -71,8 +69,8 @@ app.whenReady().then(() => {
     })
 
     createWindow()
+    
     ipcMainHandlerInstance = new IPCMainHandler(mainWindow)
-    // crerteTray(tray, mainWindow,ipcMainHandlerInstance)
 
     app.on('quit', event => {
         ipcMainHandlerInstance.end()

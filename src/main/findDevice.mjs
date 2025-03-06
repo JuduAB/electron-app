@@ -2,7 +2,18 @@ import dgram from 'dgram';
 import packet from 'dns-packet';
 import os from 'os';
 
-const findDevice = (win) => {
+function uniqueByIP(array) {
+    const seen = new Set();
+    return array.filter(item => {
+        if (!item.ip || seen.has(item.ip)) {
+            return false;
+        }
+        seen.add(item.ip);
+        return true;
+    });
+}
+
+const findDevice = (win,networkInterface) => {
     // 创建 UDP socket
     const socket = dgram.createSocket({ type: 'udp4', reuseAddr: true });
 
@@ -26,21 +37,20 @@ const findDevice = (win) => {
     // 监听 UDP 消息
     socket.on('message', (message, rinfo) => {
         const response = packet.decode(message);
-        console.log(rinfo);
-        
+
         try {
             if (response.type === 'response' && response.additionals[0].name) {
-                if (response.additionals[0].name.startsWith('DConBT') || response.additionals[0].name.startsWith('DConXi')) {
-                    const model = response.additionals[0].name.slice(0, 6);
-                    const name = response.answers[0].data.replace(/._netaudio-arc._udp.local/g, "");
-                    const ip = rinfo.address;
-                    const temp = { name, ip, id: index, model };
-                    index++;
-                    devices.push(temp);
+                if (response.additionals[0].name.startsWith('DConBT') || response.additionals[0].name.startsWith('DConXi') || response.additionals[0].name.startsWith('DConXo')) {
+                        const model = response.additionals[0].name.slice(0, 6);
+                        const name = response.answers[0].data.replace(/._netaudio-arc._udp.local/g, "");
+                        const ip = rinfo.address;
+                        const temp = { name, ip, id: index, model };
+                        index++;
+                        devices.push(temp);
                 }
             }
         } catch (error) {
-            console.error('Error processing message:', error);
+            // console.error('Error processing message:', error);
         }
     });
 
@@ -48,19 +58,14 @@ const findDevice = (win) => {
     socket.bind(MULTICAST_PORT, () => {
         const interfaces = os.networkInterfaces();
 
-        // 为每个 IPv4 网络接口加入组播组
-        Object.keys(interfaces).forEach((interfaceName) => {
-            interfaces[interfaceName].forEach((iface) => {
-                if (iface.family === 'IPv4' && !iface.internal) {
-                    try {
-                        socket.addMembership(MULTICAST_ADDRESS, iface.address);
-                    } catch (err) {
-                        console.error(`Failed to join multicast group on ${iface.address}: ${err.message}`);
-                    }
-                }
-            });
-        });
+        try {
+            socket.addMembership(MULTICAST_ADDRESS, networkInterface);
+        } catch (err) {
+            console.error(`Failed to join multicast group on ${iface.address}: ${err.message}`);
+        }
 
+        socket.setMulticastInterface(networkInterface)
+        
         // 发送 mDNS 查询
         socket.send(query, 0, query.length, MULTICAST_PORT, MULTICAST_ADDRESS, (err) => {
             if (err) {
@@ -69,32 +74,26 @@ const findDevice = (win) => {
                 console.log('mDNS query sent');
             }
         });
+
     });
 
     // 定时停止监听
     setTimeout(() => {
+
         // 将找到的设备发送到渲染进程
-        win.webContents.send('find', devices);
+        win.webContents.send('find', uniqueByIP(devices));
 
         // 退出 mDNS 组播组并关闭 socket
-        const interfaces = os.networkInterfaces();
-        Object.keys(interfaces).forEach((interfaceName) => {
-            interfaces[interfaceName].forEach((iface) => {
-                if (iface.family === 'IPv4' && !iface.internal) {
-                    try {
-                        socket.dropMembership(MULTICAST_ADDRESS, iface.address);
-                    } catch (err) {
-                        console.error(`Failed to leave multicast group on ${iface.address}: ${err.message}`);
-                    }
-                }
-            });
-        });
+        try {
+            socket.dropMembership(MULTICAST_ADDRESS, networkInterface);
+        } catch (err) {
+            console.error(`Failed to leave multicast group on ${iface.address}: ${err.message}`);
+        }
 
         socket.close(() => {
-            console.log('Socket closed');
+            // console.log('Socket closed');
         });
 
-        console.log(devices);
     }, 1000); // 1 秒后停止监听
 }
 

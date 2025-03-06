@@ -97,7 +97,7 @@ textarea{
 
 .actions {
     display: grid;
-    grid-template-columns:1fr 1fr 1fr;
+    grid-template-columns:1fr 1fr 1fr 1fr;
     grid-column-gap: 3%;
     padding: 12px;
     padding-top: 32px;

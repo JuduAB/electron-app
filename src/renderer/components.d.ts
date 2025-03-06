@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     BT: typeof import('./src/components/BT.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
+    ElDialog: typeof import('element-plus/es')['ElDialog']
     ElIcon: typeof import('element-plus/es')['ElIcon']
     ElOption: typeof import('element-plus/es')['ElOption']
     ElSelect: typeof import('element-plus/es')['ElSelect']
@@ -18,6 +19,7 @@ declare module 'vue' {
     IEpPlus: typeof import('~icons/ep/plus')['default']
     IEpVideoPause: typeof import('~icons/ep/video-pause')['default']
     IEpVideoPlay: typeof import('~icons/ep/video-play')['default']
+    Iface: typeof import('./src/components/Iface.vue')['default']
     Versions: typeof import('./src/components/Versions.vue')['default']
     Xi: typeof import('./src/components/Xi.vue')['default']
   }

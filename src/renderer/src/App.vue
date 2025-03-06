@@ -1,8 +1,9 @@
 <script setup>
-import { reactive, watch } from 'vue';
+import { defineAsyncComponent, reactive, watch } from 'vue';
 // import Versions from './components/Versions.vue'
 import Xi from './components/Xi.vue';
 import BT from './components/BT.vue';
+import Iface from './components/iface.vue';
 
 const data = reactive({
     message: '',
@@ -11,10 +12,19 @@ const data = reactive({
     BTShow: false,
     selectValue: undefined,
     options: [],
-    decodedData: {}
+    decodedData: {},
+    findButtonStatus:false
 })
-const send = async (message) => {
-    window.electron.ipcRenderer.send('ping', message)
+const send = async (content) => {
+    if (data.selectValue === undefined) {
+        ElMessage({
+            message: '请选择设备',
+            type: 'warning',
+        })
+        return;
+    };
+    
+    window.electron.ipcRenderer.send('ping', { content: content, targetIP: data.selectValue.ip })
 }
 
 watch(() => data.selectValue, (newValue, oldValue) => {
@@ -46,10 +56,40 @@ watch(() => data.selectValue, (newValue, oldValue) => {
 })
 
 const findDevice = () => {
+    data.findButtonStatus = true
+
     window.electron.ipcRenderer.send('find', 'a')
-    if(data.options.length !== 0) {
-        data.options.length = 0;
-        data.selectValue = undefined;
+
+    data.options.length = 0;
+    data.selectValue = undefined;
+}
+
+const getMAC = async () => {
+    if (data.selectValue === undefined) {
+        ElMessage({
+            message: '请选择设备',
+            type: 'warning',
+        })
+        return;
+    };
+
+    let temp = {
+        targetIP: data.selectValue.ip
+    }
+    try {
+        const result = await window.electron.ipcRenderer.invoke('dialog:getMAC', temp);
+        if (result.error) {
+            console.error('Error:', result.error);
+            return;
+        }
+        
+        ElMessage({
+            message: '已复制',
+            type: 'success',
+        })
+
+    } catch (error) {
+        console.error('Error while getting MAC address:', error);
     }
 }
 
@@ -58,7 +98,9 @@ window.electron.ipcRenderer.on('message', (_event, value) => {
 })
 
 window.electron.ipcRenderer.on('find', (_event, value) => {
+    data.options.length = 0;
     data.options.push(...value)
+    data.findButtonStatus = false
 })
 
 window.electron.ipcRenderer.on('polling', (_event, value) => {
@@ -87,6 +129,14 @@ window.electron.ipcRenderer.on('polling', (_event, value) => {
 })
 
 const reset = () => {
+    if (data.selectValue === undefined) {
+        ElMessage({
+            message: '请选择设备',
+            type: 'warning',
+        })
+        return;
+    };
+
     switch (data.selectValue.model) {
         case 'DConXi':
             window.electron.ipcRenderer.send('reset', {
@@ -108,7 +158,7 @@ const reset = () => {
 
 <template>
     <div class="versions">
-        <li>V1.0.0-Beta.5</li>
+        <li>V1.0.1-beta.3</li>
     </div>
     <div class="col-1">
         <div class="find">
@@ -119,19 +169,21 @@ const reset = () => {
                         }}</span>
                 </el-option>
             </el-select>
-            <!-- <el-button @click="findDevice()" circle> <el-icon><IEpSearch /></el-icon></el-button> -->
-            <el-button @click="findDevice()">查找设备</el-button>
-
+            <el-button @click="findDevice()" v-if="!data.findButtonStatus">查找设备</el-button>
+            <el-button loading v-if="data.findButtonStatus"></el-button>   <!-- 使用:loading会挤压文字,暂时使用v-if -->
         </div>
         <div class="actions">
             <div class="action">
-                <a @click="send({ content: 'VERSION', targetIP: data.selectValue.ip })">VERSION</a>
+                <a @click="send('VERSION')">VERSION</a>
             </div>
             <div class="action">
-                <a @click="send({ content: 'GET ALL', targetIP: data.selectValue.ip })">GET ALL</a>
+                <a @click="send('GET ALL')">GET ALL</a>
             </div>
             <div class="action">
                 <a @click="reset()">RESET</a>
+            </div>
+            <div class="action">
+                <a @click="getMAC()">GET MAC</a>
             </div>
         </div>
         <textarea readonly>{{ data.message }}</textarea>
@@ -141,7 +193,7 @@ const reset = () => {
         <BT v-if="data.BTShow" :selectDevice="data.selectValue" :data="data.decodedData" />
     </div>
     <!-- <Versions /> -->
-
+    <Iface/>
 </template>
 
 <style scoped>
