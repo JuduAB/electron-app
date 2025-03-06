@@ -14,14 +14,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Upgrade npm (with sudo)  # 解决 EACCES 问题
-        run: sudo npm install -g npm@latest
-
-      - name: Set npm registry
-        run: npm config set registry https://registry.npmjs.org/
+      - name: Set cnpm mirror
+        run: npm config set registry https://registry.npmmirror.com/
 
       - name: Install dependencies
-        run: npm ci  # 确保依赖一致
+        run: npm ci
 
       - name: Build Electron app
         run: npm run build
